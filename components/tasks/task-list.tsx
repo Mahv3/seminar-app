@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Task, TaskStatus } from "@/lib/types/database.types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -68,20 +68,25 @@ export function TaskList({
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredTasks, setFilteredTasks] = useState(tasks);
 
-  // Filter tasks based on search term
-  const handleSearch = (term: string) => {
-    setSearchTerm(term);
-    if (!term.trim()) {
+  // 重要な修正: tasksプロパティまたはsearchTermが変更されたときにfilteredTasksを更新
+  useEffect(() => {
+    if (!searchTerm.trim()) {
       setFilteredTasks(tasks);
       return;
     }
 
     const filtered = tasks.filter(task =>
-      task.title.toLowerCase().includes(term.toLowerCase()) ||
-      task.description?.toLowerCase().includes(term.toLowerCase()) ||
-      task.tags.some(tag => tag.toLowerCase().includes(term.toLowerCase()))
+      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
     );
     setFilteredTasks(filtered);
+  }, [tasks, searchTerm]);
+
+  // Filter tasks based on search term
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+    // useEffectが処理するため、ここでの手動フィルタリングは削除
   };
 
   const handleStatusChange = async (taskId: string, newStatus: TaskStatus) => {
