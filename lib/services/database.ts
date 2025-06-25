@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { Database, Task, Profile, Team, Category } from "@/lib/types/database.types";
+import { Database, Task, Profile, Team, Category, RealtimePayload } from "@/lib/types/database.types";
 
 export type SupabaseClient = ReturnType<typeof createClient>;
 
@@ -248,7 +248,7 @@ export class DatabaseService {
   }
 
   // Real-time subscriptions
-  subscribeToTasks(userId: string, callback: (payload: any) => void) {
+  subscribeToTasks(userId: string, callback: (payload: RealtimePayload) => void) {
     return this.supabase
       .channel('tasks')
       .on(
@@ -274,7 +274,7 @@ export class DatabaseService {
       .subscribe();
   }
 
-  subscribeToNotifications(userId: string, callback: (payload: any) => void) {
+  subscribeToNotifications(userId: string, callback: (payload: RealtimePayload) => void) {
     return this.supabase
       .channel('notifications')
       .on(

@@ -122,6 +122,7 @@ export function MFASetup({ onComplete }: MFASetupProps) {
       <CardContent className="space-y-4">
         {qrCode && (
           <div className="flex justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
               src={qrCode} 
               alt="MFA QR Code" 

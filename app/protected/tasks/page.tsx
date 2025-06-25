@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { TaskService, CreateTaskInput } from "@/lib/services/tasks";
 import { Task } from "@/lib/types/database.types";
@@ -33,9 +33,9 @@ export default function TasksPage() {
     overdue: 0,
   });
 
-  const taskService = new TaskService();
+  const taskService = useMemo(() => new TaskService(), []);
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     if (!user) return;
 
     setIsLoading(true);
@@ -59,13 +59,13 @@ export default function TasksPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user, taskService]);
 
   useEffect(() => {
     if (user) {
       fetchTasks();
     }
-  }, [user]);
+  }, [user, fetchTasks]);
 
   const handleCreateTask = async (data: CreateTaskInput) => {
     if (!user) return;

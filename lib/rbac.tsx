@@ -1,3 +1,4 @@
+import React from "react";
 import { TeamRole } from "@/lib/types/database.types";
 
 // Define permissions for the application
@@ -199,7 +200,7 @@ export function withRBAC<P extends object>(
         <div className="text-center p-8">
           <h2 className="text-xl font-semibold mb-2">Access Denied</h2>
           <p className="text-muted-foreground">
-            You don't have permission to access this resource.
+            You don&apos;t have permission to access this resource.
           </p>
         </div>
       );

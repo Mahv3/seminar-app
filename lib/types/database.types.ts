@@ -9,7 +9,7 @@ export interface Profile {
   email: string;
   full_name?: string;
   avatar_url?: string;
-  work_style: Record<string, any>;
+  work_style: Record<string, unknown>;
   notification_settings: {
     email_notifications: boolean;
     push_notifications: boolean;
@@ -56,7 +56,7 @@ export interface Task {
   estimated_duration?: number;
   actual_duration?: number;
   tags: string[];
-  ai_generated_fields: Record<string, any>;
+  ai_generated_fields: Record<string, unknown>;
   natural_language_input?: string;
   created_by: string;
   assigned_to?: string;
@@ -66,6 +66,12 @@ export interface Task {
   created_at: string;
   updated_at: string;
   completed_at?: string;
+  // Relationship fields (populated by joins)
+  created_by_profile?: Profile;
+  assigned_to_profile?: Profile;
+  category?: Category;
+  team?: Team;
+  subtasks?: Task[];
 }
 
 export interface TaskHistory {
@@ -73,8 +79,8 @@ export interface TaskHistory {
   task_id: string;
   changed_by: string;
   change_type: string;
-  old_values: Record<string, any>;
-  new_values: Record<string, any>;
+  old_values: Record<string, unknown>;
+  new_values: Record<string, unknown>;
   created_at: string;
 }
 
@@ -93,7 +99,7 @@ export interface Notification {
   type: NotificationType;
   title: string;
   message: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   read_at?: string;
   created_at: string;
 }
@@ -102,8 +108,8 @@ export interface AISummary {
   id: string;
   user_id: string;
   summary_type: SummaryType;
-  summary_data: Record<string, any>;
-  insights: Record<string, any>;
+  summary_data: Record<string, unknown>;
+  insights: Record<string, unknown>;
   created_at: string;
 }
 
@@ -111,11 +117,19 @@ export interface UserAnalytics {
   id: string;
   user_id: string;
   event_type: string;
-  event_data: Record<string, any>;
+  event_data: Record<string, unknown>;
   created_at: string;
 }
 
 // Database interface for Supabase
+// Realtime subscription payload types
+export interface RealtimePayload {
+  eventType: 'INSERT' | 'UPDATE' | 'DELETE';
+  new: Record<string, unknown>;
+  old: Record<string, unknown>;
+  errors: string[] | null;
+}
+
 export interface Database {
   public: {
     Tables: {

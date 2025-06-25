@@ -21,7 +21,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { CalendarIcon, Plus, X } from "lucide-react";
 import { TaskPriority, TaskStatus, Task } from "@/lib/types/database.types";
-import { CreateTaskInput, TaskService } from "@/lib/services/tasks";
+import { CreateTaskInput } from "@/lib/services/tasks";
 
 interface TaskFormProps {
   task?: Task;
@@ -93,19 +93,21 @@ export function TaskForm({
   };
 
   const handleAddTag = () => {
-    if (newTag.trim() && !formData.tags.includes(newTag.trim())) {
+    const currentTags = formData.tags || [];
+    if (newTag.trim() && !currentTags.includes(newTag.trim())) {
       setFormData({
         ...formData,
-        tags: [...formData.tags, newTag.trim()]
+        tags: [...currentTags, newTag.trim()]
       });
       setNewTag('');
     }
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
+    const currentTags = formData.tags || [];
     setFormData({
       ...formData,
-      tags: formData.tags.filter(tag => tag !== tagToRemove)
+      tags: currentTags.filter(tag => tag !== tagToRemove)
     });
   };
 
@@ -235,7 +237,7 @@ export function TaskForm({
           <div className="space-y-2">
             <Label>Tags</Label>
             <div className="flex flex-wrap gap-2 mb-2">
-              {formData.tags.map((tag) => (
+              {(formData.tags || []).map((tag) => (
                 <Badge key={tag} variant="secondary" className="flex items-center gap-1">
                   {tag}
                   <button

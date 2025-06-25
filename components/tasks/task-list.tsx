@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Task, TaskPriority, TaskStatus } from "@/lib/types/database.types";
+import { Task, TaskStatus } from "@/lib/types/database.types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -231,10 +231,10 @@ export function TaskList({
                         )}
 
                         {/* Assignee */}
-                        {task.assigned_to_profile && (
+                        {task.assigned_to && (
                           <div className="flex items-center gap-1">
                             <User className="h-3 w-3" />
-                            {task.assigned_to_profile.full_name || task.assigned_to_profile.email}
+                            {task.assigned_to_profile?.full_name || task.assigned_to_profile?.email || 'Assigned'}
                           </div>
                         )}
                       </div>

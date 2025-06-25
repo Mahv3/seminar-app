@@ -59,13 +59,7 @@ export class TaskService {
       const { data, error } = await this.supabase
         .from('tasks')
         .insert(taskData)
-        .select(`
-          *,
-          created_by_profile:profiles!created_by(id, full_name, email),
-          assigned_to_profile:profiles!assigned_to(id, full_name, email),
-          category:categories(id, name, color),
-          team:teams(id, name)
-        `)
+        .select('*')
         .single();
 
       if (error) {
@@ -84,14 +78,7 @@ export class TaskService {
     try {
       let query = this.supabase
         .from('tasks')
-        .select(`
-          *,
-          created_by_profile:profiles!created_by(id, full_name, email, avatar_url),
-          assigned_to_profile:profiles!assigned_to(id, full_name, email, avatar_url),
-          category:categories(id, name, color),
-          team:teams(id, name),
-          subtasks:tasks!parent_task_id(id, title, status, priority)
-        `)
+        .select('*')
         .or(`created_by.eq.${userId},assigned_to.eq.${userId}`)
         .order('created_at', { ascending: false });
 
@@ -158,18 +145,7 @@ export class TaskService {
     try {
       const { data, error } = await this.supabase
         .from('tasks')
-        .select(`
-          *,
-          created_by_profile:profiles!created_by(id, full_name, email, avatar_url),
-          assigned_to_profile:profiles!assigned_to(id, full_name, email, avatar_url),
-          category:categories(id, name, color),
-          team:teams(id, name),
-          subtasks:tasks!parent_task_id(*),
-          comments:task_comments(
-            *,
-            user:profiles(id, full_name, email, avatar_url)
-          )
-        `)
+        .select('*')
         .eq('id', taskId)
         .or(`created_by.eq.${userId},assigned_to.eq.${userId}`)
         .single();
@@ -219,21 +195,15 @@ export class TaskService {
       // Set completed_at when status changes to completed
       if (input.status === 'completed') {
         updateData.completed_at = new Date().toISOString();
-      } else if (input.status && input.status !== 'completed') {
-        updateData.completed_at = null;
+      } else if (input.status && ['todo', 'in_progress', 'cancelled'].includes(input.status)) {
+        updateData.completed_at = undefined;
       }
 
       const { data, error } = await this.supabase
         .from('tasks')
         .update(updateData)
         .eq('id', input.id)
-        .select(`
-          *,
-          created_by_profile:profiles!created_by(id, full_name, email),
-          assigned_to_profile:profiles!assigned_to(id, full_name, email),
-          category:categories(id, name, color),
-          team:teams(id, name)
-        `)
+        .select('*')
         .single();
 
       if (error) {
